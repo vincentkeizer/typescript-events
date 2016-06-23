@@ -10,7 +10,7 @@ Inspired by DDDs domain events.
 ### Subscribe to events
 
 ```javascript
-Core.Mediator.instance.subscribe("person-created", function(name) { 
+Core.Mediator.instance().subscribe("person-created", function(name) { 
   console.log("person created with name " + name); 
 })
 ```
@@ -18,7 +18,7 @@ Core.Mediator.instance.subscribe("person-created", function(name) {
 ### Publish events
 
 ```javascript
-Core.Mediator.instance.publish({ 
+Core.Mediator.instance().publish({ 
     name: "person-created", 
     data: "Vincent" })
 ```
