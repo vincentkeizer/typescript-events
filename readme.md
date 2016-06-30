@@ -6,22 +6,28 @@ It creates a way for classes/components to communicate, but aims for loose coupl
 
 Inspired by DDDs domain events.
 
-
-### Subscribe to events
-
-```javascript
-Core.Mediator.instance().subscribe("person-created", function(name) { 
-  console.log("person created with name " + name); 
-})
-```
-
 ### Publish events
 
 ```javascript
 Core.Mediator.instance().publish({ 
     name: "person-created", 
-    data: "Vincent" })
+    data: { 
+        id : 1,
+        name: "Vincent" 
+    }  
+});
 ```
+
+
+### Subscribe to events
+
+```javascript
+Core.Mediator.instance().subscribe("person-created", function(data) { 
+  console.log("person created with name " + data.name);  // When event is published, will output "person created with name Vincent"
+});
+```
+
+
 
 The data is provided as argument in the subscribers callback function.
 
