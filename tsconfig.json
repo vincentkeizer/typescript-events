@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "amd",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outDir": "./dist/",
+        "declaration": true,
+        "declarationDir" : "./typings/"
+    },
+    "files": [
+        "./src/mediator.ts"
+    ]
+}

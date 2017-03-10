@@ -9,7 +9,9 @@ Inspired by DDDs domain events.
 ### Publish events
 
 ```javascript
-Core.Mediator.instance().publish({ 
+import { Mediator } from "mediator"
+
+Mediator.instance().publish({ 
     name: "person-created", 
     data: { 
         id : 1,
@@ -22,7 +24,9 @@ Core.Mediator.instance().publish({
 ### Subscribe to events
 
 ```javascript
-Core.Mediator.instance().subscribe("person-created", function(data) { 
+import { Mediator } from "mediator"
+
+Mediator.instance().subscribe("person-created", function(data) { 
   console.log("person created with name " + data.name);  // When event is published, will output "person created with name Vincent"
 });
 ```
