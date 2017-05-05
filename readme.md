@@ -11,7 +11,7 @@ Inspired by DDDs domain events.
 ```javascript
 import { Mediator } from "mediator"
 
-Mediator.instance().publish({ 
+new Mediator().publish({ 
     name: "person-created", 
     data: { 
         id : 1,
@@ -26,7 +26,7 @@ Mediator.instance().publish({
 ```javascript
 import { Mediator } from "mediator"
 
-Mediator.instance().subscribe("person-created", function(data) { 
+new Mediator().subscribe("person-created", function(data) { 
   console.log("person created with name " + data.name);  // When event is published, will output "person created with name Vincent"
 });
 ```

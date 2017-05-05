@@ -1,14 +1,11 @@
 declare class Mediator implements IMediator {
-    static classInstance: Mediator;
-    private events;
-    private constructor();
-    publish(event: IEvent<Object>): Mediator;
-    subscribe(eventName: string, callback: Function): Mediator;
-    static instance(): IMediator;
+    constructor();
+    publish<T>(event: IEvent<T>): IMediator;
+    subscribe<T>(eventName: string, callback: (data: T) => void): IMediator;
 }
 interface IMediator {
-    publish(event: IEvent<Object>): void;
-    subscribe(eventName: string, callback: Function): void;
+    publish<T>(event: IEvent<T>): IMediator;
+    subscribe<T>(eventName: string, callback: (data: T) => void): IMediator;
 }
 interface IEvent<T> {
     name: string;

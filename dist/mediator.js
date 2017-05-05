@@ -1,38 +1,49 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     exports.__esModule = true;
-    var Mediator = (function () {
-        function Mediator() {
+    var EventStorage = (function () {
+        function EventStorage() {
             this.events = {};
         }
-        Mediator.prototype.publish = function (event) {
-            if (!this.events[event.name]) {
-                return this;
+        EventStorage.prototype.get = function (eventName) {
+            if (!this.events[eventName]) {
+                return [];
             }
-            for (var i = 0, l = this.events[event.name].length; i < l; i++) {
-                var subscription = this.events[event.name][i];
-                subscription.callback(event.data);
+            return this.events[eventName];
+        };
+        EventStorage.prototype.add = function (eventName, callback) {
+            if (!this.events[eventName]) {
+                this.events[eventName] = [];
+            }
+            this.events[eventName].push(callback);
+        };
+        EventStorage.instance = function () {
+            if (EventStorage.classInstance == null) {
+                EventStorage.classInstance = new EventStorage();
+            }
+            return EventStorage.classInstance;
+        };
+        return EventStorage;
+    }());
+    var Mediator = (function () {
+        function Mediator() {
+        }
+        Mediator.prototype.publish = function (event) {
+            var subscriptions = EventStorage.instance().get(event.name);
+            for (var i = 0, l = subscriptions.length; i < l; i++) {
+                var subscription = subscriptions[i];
+                subscription(event.data);
             }
             return this;
         };
         ;
         Mediator.prototype.subscribe = function (eventName, callback) {
-            if (!this.events[eventName]) {
-                this.events[eventName] = [];
-            }
-            this.events[eventName].push({ callback: callback });
+            EventStorage.instance().add(eventName, callback);
             return this;
         };
         ;
-        Mediator.instance = function () {
-            if (this.classInstance == null) {
-                this.classInstance = new Mediator();
-            }
-            return this.classInstance;
-        };
         return Mediator;
     }());
-    Mediator.classInstance = null;
     exports.Mediator = Mediator;
 });
 //# sourceMappingURL=mediator.js.map

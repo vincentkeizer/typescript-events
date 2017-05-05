@@ -1,45 +1,55 @@
 
-class Mediator implements IMediator {
-    static classInstance: Mediator = null;
-    private events: { [id: string]: Array<ISubscription>; } = {};
+class EventStorage {
+    private static classInstance : EventStorage; 
+    private events: { [id: string]: Array<(data : Object) => void>; } = {};
 
-    private constructor() { }
+    private constructor() {}
 
-    public publish(event: IEvent<Object>): Mediator {
-        if (!this.events[event.name]) {
-            return this;
+    public get<T>(eventName : string) : Array<(data: T) => void> {
+        if (!this.events[eventName]) {
+            return [];
         }
 
-        for (var i = 0, l = this.events[event.name].length; i < l; i++) {
-            let subscription = this.events[event.name][i];
-            subscription.callback(event.data);
-        }
-        return this;
-    };
+        return this.events[eventName];
+    }
 
-    public subscribe(eventName: string, callback: Function): Mediator {
+    public add<T>(eventName : string, callback: (data : T) => void) {
         if (!this.events[eventName]) {
             this.events[eventName] = [];
         }
-        this.events[eventName].push({ callback: callback });
+        this.events[eventName].push(callback);
+    }
+
+    public static instance() : EventStorage {
+        if (EventStorage.classInstance == null) {
+            EventStorage.classInstance = new EventStorage();
+        }
+        return EventStorage.classInstance;
+    }
+}
+
+class Mediator implements IMediator {
+    public constructor() { }
+
+    public publish<T>(event: IEvent<T>): IMediator {
+        let subscriptions = EventStorage.instance().get(event.name);
+
+        for (var i = 0, l = subscriptions.length; i < l; i++) {
+            let subscription = subscriptions[i];
+            subscription(event.data);
+        }
         return this;
     };
 
-    static instance(): IMediator {
-    if (this.classInstance == null) {
-        this.classInstance = new Mediator();
-    }
-    return this.classInstance;
-}
-}
-
-interface ISubscription {
-    callback: Function;
+    public subscribe<T>(eventName: string, callback: (data : T) => void) : IMediator {
+        EventStorage.instance().add(eventName, callback);
+        return this;
+    };
 }
 
 interface IMediator {
-    publish(event: IEvent<Object>) : void;
-    subscribe(eventName: string, callback: Function)  : void;
+    publish<T>(event: IEvent<T>) : IMediator;
+    subscribe<T>(eventName: string, callback: (data : T) => void)  : IMediator;
 }
 
 interface IEvent<T> {
